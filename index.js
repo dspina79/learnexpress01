@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.port || 3000;
 const arrayData = [1, 2, 3];
 
 app.get('/', (req, res) => {
