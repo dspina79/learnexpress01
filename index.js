@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const arrayData = {broke1M: 0, data: [1, 2, 3]};
-
 const personData =  [
     {
         firstName: "Dan",
@@ -36,8 +35,47 @@ const personData =  [
     }
 ]
 
+const isPrime = (n) => {
+    if (n === 1 || n === 2) {
+        return true;
+    } else if (n % 2 === 0) {
+        return false;
+    } else {
+        for (var i = 3; i < n; i++) {
+            if (n % i === 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 app.get('/', (req, res) => {
     res.send("Hello <strong>World!</strong>");
+});
+
+app.get('/api/range', (req, res) => {
+    if (req.query.start && req.query.end) {
+        let s = parseInt(req.query.start);
+        let e = parseInt(req.query.end);
+        if (s > 0 && e > 0 && s <= e) { 
+            var onlyPrimes = req.query.primesonly && req.query.primesonly === "1";
+            var rangeData = [];
+            while (s <= e) {
+                if (onlyPrimes && isPrime(s)) {
+                    rangeData.push(s);
+                } else if(!onlyPrimes) {
+                    rangeData.push(s);
+                }
+                s++;
+            }
+            res.send(`${onlyPrimes} ${rangeData}`);
+        } else {
+            res.send("Invalid range specified.");
+        }
+    } else {
+        res.send("Invalid range specified.");
+    }
 });
 
 app.get('/api/arrayData', (req, res) => {
