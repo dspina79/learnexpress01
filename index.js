@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+
+app.use(express.json());
+
 const port = process.env.PORT || 3000;
 const arrayData = {broke1M: 0, data: [1, 2, 3]};
 const personData =  [
@@ -71,10 +74,10 @@ app.get('/api/range', (req, res) => {
             }
             res.send(`${onlyPrimes} ${rangeData}`);
         } else {
-            res.send("Invalid range specified.");
+            res.status(500).send("Invalid range specified.");
         }
     } else {
-        res.send("Invalid range specified.");
+        res.status(500).send("Invalid range specified.");
     }
 });
 
@@ -95,6 +98,22 @@ app.get('/api/arrayData/:index', (req, res) => {
         res.send('Index out of bounds.');
     } else {
         res.send(`Value at ${index} = ${arrayData.data[index]}`);
+    }
+});
+
+app.post('/api/personData', (req, res) => {
+    const fullName = req.body.fullname;
+    const nameParts = fullName.split(' ');
+    if (nameParts.length !== 2) {
+        res.status(400).send("Invalid name element.");
+    } else {
+        const person = {
+            firstName: nameParts[0],
+            lastName: nameParts[1],
+            age: 0
+        };
+        personData.push(person);
+        res.send(person);
     }
 });
 
